@@ -4,20 +4,19 @@ import { useAuth } from "../providers/AuthProvider";
 import { useEffect } from "react";
 
 export default function Dashboard() {
-  const { authenticated, keycloak } = useAuth();
+  const { authenticated, keycloak, initialized } = useAuth();
 
   useEffect(() => {
-    if (!authenticated) {
+    if (!initialized) return;
+
+    if (!authenticated && keycloak) {
       keycloak.login();
     }
-  }, [authenticated]);
+  }, [authenticated, keycloak, initialized]);
+
+  if (!initialized) return <p>Loading...</p>;
 
   if (!authenticated) return <p>Redirecting...</p>;
 
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      <pre>{keycloak.token}</pre>
-    </div>
-  );
+  return <h1>Dashboard</h1>;
 }
